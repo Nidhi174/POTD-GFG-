@@ -1,0 +1,64 @@
+class trie {
+public:
+    trie* ch[26];
+    trie() {
+        for(int i=0;i<26;i++){
+            ch[i]=nullptr;
+        }
+    }
+};
+class Solution{
+public:
+    int prefixSuffixString(vector<string> &s1,vector<string> s2){
+        // Code here
+         trie* root=new trie();
+        build(s1,root); //build trie for each stirng in s1
+        
+        //reverse each string in s1 - since string is immutable - have to use SB
+        for(int i=0;i<s1.size();i++)
+        {
+            string str = s1[i];
+            reverse(str.begin(), str.end());
+            s1[i] = str;
+        }
+        build(s1,root);
+        
+        // check each string in s2 in trie - prefix present
+        //reverse each stirng ins s2 and check in trie - siffix present
+        int ans=0;
+        for(int i=0;i<s2.size();i++)
+        {
+            string str = s2[i];
+            reverse(str.begin(), str.end());
+            if(find(str,root)==1 || find(s2[i],root)==1)  // need atleast 1 as said in question.
+                ans++;
+        }
+        return ans;
+    }
+    
+    int find(string s, trie* root){
+        for(int i = 0; i < s.length(); i++)
+        {
+            if(root->ch[s[i]-'a'] == nullptr)
+                return 0; 
+            
+            root = root->ch[s[i]-'a'];
+        }
+        return 1;
+    }
+    
+    void build(vector<string>& a, trie* root){
+        trie* temp;
+        for(int i = 0; i < a.size();i++)
+        {
+            temp = root;
+            for(int j = 0;j < a[i].length();j++)
+            {
+                if(temp->ch[a[i][j]-'a'] == nullptr)
+                    temp->ch[a[i][j]-'a'] = new trie();
+                    
+                temp = temp->ch[a[i][j]-'a'];
+            }
+        }
+    }
+};
